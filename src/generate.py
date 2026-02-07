@@ -16,5 +16,5 @@ if __name__ == "__main__":
         .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
         .getOrCreate()
     )
-    Generator(spark).run()
+    Generator(spark, user_count=1, store_count=5, order_count=100).run()
     spark.stop()

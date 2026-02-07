@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+
   minio:
     image: quay.io/minio/minio:latest
     container_name: minio
@@ -77,3 +78,5 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+
+  
