@@ -1,12 +1,12 @@
-from etl_process import ETLProcess
-from config import *
 from pyspark.sql import SparkSession
+from generator import Generator
 import os
+
 
 if __name__ == "__main__":
     spark = (
         SparkSession.builder
-        .appName("ETL")
+        .appName("Generate")
         .config("spark.hadoop.fs.s3a.endpoint", os.getenv("MINIO_ENDPOINT", "http://minio:9000"))
         .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false")
@@ -16,17 +16,5 @@ if __name__ == "__main__":
         .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
         .getOrCreate()
     )
-
-    table_paths = {
-        order_path: "order",
-        user_path: "user",
-        store_path: "store"
-    }
-
-    sql_path = "/opt/spark/sql/result.sql"
-
-    if os.path.exists(sql_path):
-        etl_process = ETLProcess(spark, table_paths)
-        etl_process.run(sql_path, result_path)
-
+    Generator(spark).run()
     spark.stop()

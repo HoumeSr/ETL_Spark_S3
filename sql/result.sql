@@ -24,7 +24,7 @@ with
                     city
                 order by sum_amount desc
             ) as rank_amount
-        from c
+        from b
     )
 select
     city,

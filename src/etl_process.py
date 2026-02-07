@@ -29,18 +29,16 @@ class ETLProcess:
             # Нужно закинуть в лог
             pass
 
-    def run(self, sql_paths=[]):
+    def run(self, sql_path, out_path):
         if self.valide_tables():
             for table_path, table_name in self.table_paths.items():
                 self.create_TempView(table_path, table_name)
-            # Здесь будет код для запуска ETL
-            for sql_path in sql_paths:
-                with open(sql_path, 'r') as sql_file:
-                    sql = sql_file.read()
-                    df = self.spark.sql(sql)
-                    self.write_parquet(
-                        df, sql_path.split('/')[-1].split('.')[0])
-                    # Нужно закинуть в лог
+            with open(sql_path, 'r') as sql_file:
+                sql = sql_file.read()
+                df = self.spark.sql(sql)
+                self.write_parquet(
+                    df, out_path)
+                # Нужно закинуть в лог
         else:
             # Нужно закинуть в лог
             pass
