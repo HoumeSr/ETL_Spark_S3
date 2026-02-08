@@ -1,7 +1,16 @@
+import logging
+
+
 class ETLProcess:
     def __init__(self, spark, table_paths: dict):
         self.spark = spark
         self.table_paths = table_paths
+
+        self.logger = logging.getLogger(__name__)
+
+        self.logger.info(
+            f"Initializing ETLProcess"
+        )
 
     def valide_tables(self):
         result = True
@@ -9,24 +18,23 @@ class ETLProcess:
             try:
                 self.spark.read.parquet(table_path).limit(1).collect()
             except:
-                # Нужно закинуть в лог
                 result = False
         return result
 
     def write_parquet(self, df, path):
         try:
             df.write.mode('overwrite').parquet(path)
-        except:
-            # Нужно закинуть в лог
-            pass
+            self.logger.info()
+        except Exception as e:
+            self.logger.error(f"Write Parquet '{path}' error", e)
 
     def create_TempView(self, table_path, table_name):
         try:
             df = self.spark.read.parquet(table_path)
             df.createTempView(table_name)
-            # Нужно закинуть в лог
-        except:
-            # Нужно закинуть в лог
+            self.logger.info(f"CreateTempView {table_name} success")
+        except Exception as e:
+            self.logger.info(f"Creating view {table_name} failed", e)
             pass
 
     def run(self, sql_path, out_path):
@@ -38,7 +46,6 @@ class ETLProcess:
                 df = self.spark.sql(sql)
                 self.write_parquet(
                     df, out_path)
-                # Нужно закинуть в лог
+                self.logger.info(f"Parquet {out_path} created")
         else:
-            # Нужно закинуть в лог
-            pass
+            self.logger.error("Parquets were not found")

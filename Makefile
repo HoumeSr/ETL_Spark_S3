@@ -9,10 +9,16 @@ generate:
  	 --master spark://spark-master:7077 \
  	 /opt/spark/src/generate.py
 
-get_result:
+generate_log:
+	docker exec spark-master cat /opt/spark/work-dir/generate.log
+
+etl:
 	docker exec -it spark-master /opt/spark/bin/spark-submit \
   	--master spark://spark-master:7077 \
   	/opt/spark/src/main.py
+
+etl_log:
+	docker exec spark-master cat /opt/spark/work-dir/etl.log
 
 jars-download:
 	bash ./jar-downloader.sh

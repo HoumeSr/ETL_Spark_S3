@@ -2,6 +2,7 @@ from random import randint
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType
 from config import order_path, store_path, user_path
 from datetime import datetime
+import logging
 
 
 class Generator:
@@ -10,13 +11,12 @@ class Generator:
         self.user_count = user_count
         self.store_count = store_count
         self.order_count = order_count
+        self.logger = logging.getLogger(__name__)
 
-    # def write_parquet(self, df, path):
-    #     try:
-    #         df.write.mode('overwrite').parquet(path)
-    #     except:
-    #         # Нужно закинуть в лог
-    #         pass
+        self.logger.info(
+            f"Initializing Generator: "
+            f"user={user_count}, store={store_count}, order={order_count}"
+        )
 
     def create_store_parquet(self):
         try:
@@ -42,9 +42,10 @@ class Generator:
             df_store = self.spark.createDataFrame(
                 store_list, schema=store_schema)
             df_store.write.mode('overwrite').parquet(store_path)
+            self.logger.info("table 'store' was created")
 
         except Exception as e:
-            print("create_order_parquet error:", e)
+            self.logger.error(f"Table 'store' creation failed: {e}")
             raise
 
     def create_user_parquet(self):
@@ -75,9 +76,10 @@ class Generator:
             df_user = self.spark.createDataFrame(
                 user_list, schema=user_schema)
             df_user.write.mode('overwrite').parquet(user_path)
+            self.logger.info("table 'user' was created")
 
         except Exception as e:
-            print("create_user_parquet error:", e)
+            self.logger.error(f"Table 'user' creation failed: {e}")
             raise
 
     def create_order_parquet(self):
@@ -111,15 +113,12 @@ class Generator:
             df_order = self.spark.createDataFrame(
                 order_list, schema=order_schema)
             df_order.write.mode('overwrite').parquet(order_path)
+            self.logger.info("table 'order' was created")
         except Exception as e:
-            print("create_order_parquet error:", e)
+            self.logger.error(f"Table 'order' creation failed: {e}")
             raise
 
     def run(self):
-        try:
-            self.create_user_parquet()
-            self.create_store_parquet()
-            self.create_order_parquet()
-        except Exception as e:
-            print("run error:", e)
-            raise
+        self.create_user_parquet()
+        self.create_store_parquet()
+        self.create_order_parquet()
