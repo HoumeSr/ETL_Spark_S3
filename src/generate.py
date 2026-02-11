@@ -22,7 +22,7 @@ if __name__ == "__main__":
             .getOrCreate()
         )
         logger.info(f"SparkSession created")
-        Generator(spark, user_count=1, store_count=5, order_count=100).run()
+        Generator(spark, user_count=5, store_count=5, order_count=100).run()
         spark.stop()
     except Exception as e:
         logger.error(f"Creating SparkSession failed: {e}")
