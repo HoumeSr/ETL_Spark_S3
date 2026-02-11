@@ -1,9 +1,12 @@
-from etl_process import ETLProcess
-from config import *
+from config import result_path, result_sql
 from pyspark.sql import SparkSession
 import os
-from log import setup_logging
 import logging
+
+from etl_process import ETLProcess
+from log import setup_logging
+from tables import store, order, user
+
 
 if __name__ == "__main__":
     setup_logging("etl.log")
@@ -23,19 +26,15 @@ if __name__ == "__main__":
         )
         logger.info(f"SparkSession created")
 
-        table_paths = {
-            order_path: "order",
-            user_path: "user",
-            store_path: "store"
-        }
+        store(spark).createTempTable()
+        user(spark).createTempTable()
+        order(spark).createTempTable()
 
-        sql_path = "/opt/spark/sql/result.sql"
-
-        if os.path.exists(sql_path):
-            etl_process = ETLProcess(spark, table_paths)
-            etl_process.run(sql_path, result_path)
+        if os.path.exists(result_sql):
+            etl_process = ETLProcess(spark)
+            etl_process.run(result_sql, result_path)
         else:
-            logger.critical(f"{sql_path} file/path not exists")
+            logger.critical(f"{result_sql} file/path not exists")
 
         spark.stop()
     except Exception as e:

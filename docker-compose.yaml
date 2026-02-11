@@ -52,6 +52,8 @@ services:
     volumes:
       - ./src:/opt/spark/src
       - ./sql:/opt/spark/sql
+      - ./tables:/opt/spark/tables
+      - ./tests:/opt/spark/tests
       - ./jars/hadoop-aws-3.3.4.jar:/opt/spark/jars/hadoop-aws-3.3.4.jar:ro
       - ./jars/aws-java-sdk-bundle-1.12.262.jar:/opt/spark/jars/aws-java-sdk-bundle-1.12.262.jar:ro
     environment:
