@@ -1,5 +1,5 @@
 from tables.table import Table
-from src.config import user_path
+from src.config import order_path
 
 
 class Order(Table):
@@ -12,4 +12,4 @@ class Order(Table):
             "status",
             "created_at"
         ]
-        super().__init__(spark, user_path, columns)
+        super().__init__(spark, order_path, columns)

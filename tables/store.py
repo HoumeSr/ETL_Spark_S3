@@ -1,12 +1,12 @@
 from tables.table import Table
-from src.config import user_path
+from src.config import store_path
 
 
-class User(Table):
+class Store(Table):
     def __init__(self, spark):
         columns = [
             "id",
             "name",
             "city"
         ]
-        super().__init__(spark, user_path, columns)
+        super().__init__(spark, store_path, columns)

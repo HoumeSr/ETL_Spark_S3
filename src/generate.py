@@ -1,26 +1,17 @@
-from config import result_path, result_sql
 from pyspark.sql import SparkSession
+from generator import Generator
 import os
-import sys
 import logging
-
-from etl_process import ETLProcess
 from log import setup_logging
-sys.path.insert(0, '/opt/spark')
-sys.path.insert(0, '/opt/spark/tables')
-from tables.user import User
-from tables.store import Store
-from tables.order import Order
-
 
 
 if __name__ == "__main__":
-    setup_logging("etl.log")
+    setup_logging("generate.log")
     logger = logging.getLogger(__name__)
     try:
         spark = (
             SparkSession.builder
-            .appName("ETL")
+            .appName("Generate")
             .config("spark.hadoop.fs.s3a.endpoint", os.getenv("MINIO_ENDPOINT", "http://minio:9000"))
             .config("spark.hadoop.fs.s3a.path.style.access", "true")
             .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false")
@@ -31,23 +22,7 @@ if __name__ == "__main__":
             .getOrCreate()
         )
         logger.info(f"SparkSession created")
-
-        store = Store(spark)
-        store.open_table()
-        store.createTempView()
-        order = Order(spark)
-        order.open_table()
-        order.createTempView()
-        user = User(spark)
-        user.open_table()
-        user.createTempView()
-
-        if os.path.exists(result_sql):
-            etl_process = ETLProcess(spark)
-            etl_process.run(result_sql, result_path)
-        else:
-            logger.critical(f"{result_sql} file/path not exists")
-
+        Generator(spark, user_count=1, store_count=5, order_count=100).run()
         spark.stop()
     except Exception as e:
         logger.error(f"Creating SparkSession failed: {e}")

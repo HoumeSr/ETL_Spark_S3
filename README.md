@@ -3,11 +3,21 @@
 ```bash
 make jars-download
 ```
-Чтобы поднять инфаструктуру можно использовать:
+Или можно скачать по сслыкам \
+[aws](https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar) \
+[hadoop](https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar)\
+И вручную перенести в корневую папку jars\
+Чтобы поднять инфраструктуру можно использовать:
 ```bash
 make up
 ```
-Одной из команд ниже можно сгенерировать данные для таблиц order, store и user
+Можно запустить тест на работу SQL-запроса командой:
+```bash
+make test
+```
+
+Одной из команд ниже можно сгенерировать данные для таблиц order, store и user. 
+Это делается, чтобы быстро можно было проверить всё необходимое для работы ETL-процесса.
 
 ```bash
 make generate
