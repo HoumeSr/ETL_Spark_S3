@@ -24,4 +24,4 @@ class ETLProcess:
             df = self.spark.sql(sql)
 
             self.write_parquet(df, out_path)
-            self.logger.info(f"Parquet {out_path} created")
+            self.logger.info(f"Parquet {out_path} created. A total of {df.count()} rows were written.")
